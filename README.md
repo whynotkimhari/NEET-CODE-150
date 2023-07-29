@@ -2,7 +2,7 @@
 https://neetcode.io/practice
 <hr>
 
-# 20 Coding pattern
+# 20 Coding pattern <sub>src = DesignGurus</sub>
 <ol>
   <li>Sliding Window
     <br>
