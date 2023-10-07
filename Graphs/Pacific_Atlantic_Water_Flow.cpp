@@ -67,3 +67,58 @@ public:
 
     }
 };
+
+
+// Sol 2: Better way to solve
+// Find all cell that can reach Pacific
+// Find all cell that can reach Atlantic
+// Then merge them to find which cell can reach Pacific and Atlantic
+class Solution {
+public:
+    void dfs(int i, int j, int r, int c, set<pair<int,int>>& visited, vector<vector<int>>& heights, int prev) {
+        if(
+            visited.find({i, j}) != visited.end() ||
+            i < 0 || j < 0 || i == r || j == c ||
+            heights[i][j] < prev
+        ) return;
+
+        visited.insert({i, j});
+        dfs(i - 1, j, r, c, visited, heights, heights[i][j]);
+        dfs(i + 1, j, r, c, visited, heights, heights[i][j]);
+        dfs(i, j - 1, r, c, visited, heights, heights[i][j]);
+        dfs(i, j + 1, r, c, visited, heights, heights[i][j]);
+    }
+
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        int r = heights.size(), c = heights[0].size();
+
+        vector<vector<int>> answer;
+        
+        set<pair<int,int>> pacific, atlantic;
+
+        for(int i = 0; i < c; i++) {
+            dfs(0, i, r, c, pacific, heights, heights[0][i]);
+            dfs(r - 1, i, r, c, atlantic, heights, heights[r - 1][i]);
+        }
+
+        for(int i = 0; i < r; i++) {
+            dfs(i, 0, r, c, pacific, heights, heights[i][0]);
+            dfs(i, c - 1, r, c, atlantic, heights, heights[i][c - 1]);
+        }
+
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++) {
+                if(
+                    pacific.find({i, j}) != pacific.end() && 
+                    atlantic.find({i, j}) != atlantic.end()
+                ) {
+                    vector<int> tmp = {i, j};
+                    answer.push_back(tmp);
+                }
+            }
+        }
+        
+        return answer;
+
+    }
+};
