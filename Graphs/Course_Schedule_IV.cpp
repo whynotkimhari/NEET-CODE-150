@@ -1,7 +1,6 @@
-// TLE: will fix soon...
 class Solution {
 public:
-    bool dfs(int i, map<int, set<int>>& g, set<int>& visited, vector<int>& learnt) {
+    bool dfs(int i, unordered_map<int, unordered_set<int>>& g, unordered_set<int>& visited, vector<int>& learnt) {
         visited.insert(i);
         for(auto &c : g[i]) {
             if(visited.find(c) == visited.end()) {
@@ -10,46 +9,32 @@ public:
             }
             // Because the test say that will not loop exist => Then no need to check "else" case
         }
-        if(find(learnt.begin(), learnt.end(), i) == learnt.end()) {
-            learnt.push_back(i);
-        }
+        if(find(learnt.begin(), learnt.end(), i) == learnt.end()) learnt.push_back(i);
         
         return true;
     }
 
     vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
-        map<int, set<int>> g;
-        set<int> visited;
+        unordered_map<int, unordered_set<int>> g;
+        unordered_map<int, int> m;
+        unordered_set<int> visited;
+        
         set<pair<int,int>> pres;
-        vector<int> learnt;
-        vector<int> ord;
+        vector<int> learnt, ord;
         vector<bool> ans;
-        map<int, int> m;
 
         for(auto &pair : prerequisites) {
             g[pair[0]].insert(pair[1]);
             pres.insert({pair[0], pair[1]});
         }
 
-        for(auto k: g) {
-            cout << k.first << ": ";
-            for(auto v: k.second) cout << v << " ";
-            cout << endl;
-        }
-
-        for(int i = 0; i < numCourses; i++) {
-            dfs(i, g, visited, learnt);
-        }
-
-        for(auto &c: learnt) {
-            cout << c << " ";
-        }
-        cout << endl;
+        for(int i = 0; i < numCourses; i++) dfs(i, g, visited, learnt);
 
         if(!prerequisites.size()) {
             for(auto &query : queries) ans.push_back(false);
             return ans;
         }
+        
         int id = 0;
         ord.push_back(id);
 
@@ -63,22 +48,10 @@ public:
                 }
             }
             
-            if(!flag)
-             {
-                // id = 0;
-                ord.push_back(id);
-            }
+            if(!flag) ord.push_back(id);
         }
 
-        for(int i = 0; i < ord.size(); i++) {
-            m[learnt[i]] = ord[i];
-        }
-
-        for(auto &c: ord) {
-            cout << c << " ";
-        }
-        cout << endl;
-
+        for(int i = 0; i < ord.size(); i++) m[learnt[i]] = ord[i];
 
         for(auto &query : queries) {
             if(m[query[0]] > m[query[1]]) {
@@ -95,10 +68,15 @@ public:
                         if(visited.find(l) == visited.end()) {
                             q.push(l);
 
-                            if(l == query[1]) flag = true;
+                            if(l == query[1]) {
+                                flag = true;
+                                break;
+                            }
                         }
                     }
                     q.pop();
+
+                    if(flag) break;
                 }
 
                 ans.push_back(flag);
