@@ -1,5 +1,6 @@
-# NEET-CODE-150... But let's even try NeetCode All
-https://neetcode.io/practice
+# NEET-CODE-150... But let's even try NeetCode All, and CodeForces
+https://neetcode.io/practice <br>
+https://codeforces.com
 <hr>
 
 # 20 Coding pattern <sub>src = DesignGurus</sub>
